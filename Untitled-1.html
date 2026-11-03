@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <header class="header">
+    <div class="headerLeft">
+      <img src="https://img.redocn.com/sheji/20211031/iconboluotubiaoyuansu_11840097.jpg" width="30px">
+    </div>
+    <div class="headerRight">
+      222
+    </div>
+  </header>
+  <div class="main">
+    <div class="mainLeft">
+      111
+    </div>                                                                                    
+    <div class="mainRight">
+      <button id="collapseBtn">折叠</button>
+      222
+    </div>
+  </div>
+</body>
+<script>
+    const collapseBtn = document.querySelector('#collapseBtn')
+    const mainLeft = document.querySelector('.mainLeft')
+    collapseBtn.addEventListener('click', () => {
+        mainLeft.classList.toggle('collapsed')
+    })
+</script>
+</html>
