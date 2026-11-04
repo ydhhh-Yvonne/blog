@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import "./App.css";
-import ReactMarkdown from 'react-markdown'
+import { useLocalStorage, useMedia } from "react-use";
+import ReactMarkdown from "react-markdown";
 
 const formatTime = (ts) => {
   const date = new Date(ts);
@@ -30,12 +30,25 @@ const navItems = [
   { key: "assemble", label: "Assemble" },
 ];
 
+const thBase =
+  "whitespace-nowrap border-b border-line bg-th px-4 py-[15px] text-left font-semibold";
+const tdClass =
+  "overflow-hidden text-ellipsis whitespace-nowrap border-b border-line-light px-4 py-[15px] text-ink-2";
+
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [categoryData, setCategoryData] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [activeNav, setActiveNav] = useState("home");
   const [current, setCurrent] = useState(null);
+
+  const [theme, setTheme] = useLocalStorage("blog-theme", "system");
+  const isSystemDark = useMedia("(prefers-color-scheme: dark)");
+  const isDark = theme === "system" ? isSystemDark : theme === "dark";
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
 
   useEffect(() => {
     fetch("/data/data.json")
@@ -66,97 +79,123 @@ const App = () => {
   );
 
   return (
-    <>
-      <header className="header">
-        <div className="headerLeft">
+    <div className="text-ink">
+      <header className="flex h-16 items-center justify-between border-b border-line bg-panel px-5">
+        <div className="flex items-center gap-4">
           <span>Blog</span>
-          <div className="headerSearch">
+          <div className="flex h-8 w-70 items-center rounded-md border border-line bg-subtle px-2.5">
             <input
               type="text"
               placeholder="Search"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              className="flex-1 border-none bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-2/60"
             />
           </div>
         </div>
-        <div className="headerRight">
-          <div className="headerSelect">English</div>
-          <div className="headerSelect">Follow system</div>
+        <div className="flex items-center gap-2.5">
+          <div className="h-8 cursor-pointer rounded-md border border-line bg-panel px-3 text-[13px] leading-8 text-ink-2 hover:bg-hover">
+            English
+          </div>
+          <div className="relative">
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="h-8 cursor-pointer appearance-none rounded-md border border-line bg-panel py-0 pl-3 pr-7 text-[13px] text-ink-2 hover:bg-hover"
+            >
+              <option value="light">Light mode</option>
+              <option value="dark">Dark mode</option>
+              <option value="system">Follow system</option>
+            </select>
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-ink-2">
+              ▾
+            </span>
+          </div>
         </div>
       </header>
-      <div className={"main" + (collapsed ? " collapsed" : "")}>
-        <div className={"mainLeft" + (collapsed ? " collapsed" : "")}>
-          <ul className="navList">
+
+      <div className="flex h-[calc(100vh-64px)]">
+        <div
+          className={`shrink-0 overflow-hidden whitespace-nowrap border-r border-line bg-panel transition-[width,padding] duration-300 ${
+            collapsed ? "w-0 border-r-0 px-0 py-3" : "w-[150px] px-2 py-3"
+          }`}
+        >
+          <ul>
             {navItems.map((item) => (
               <li
                 key={item.key}
-                className={
-                  "navItem" + (activeNav === item.key ? " active" : "")
-                }
                 onClick={() => {
                   setActiveNav(item.key);
                   setCurrent(null);
                 }}
+                className={`mb-0.5 flex h-10 cursor-pointer select-none items-center rounded-lg px-3.5 text-sm ${
+                  activeNav === item.key
+                    ? "bg-active-bg text-active-ink"
+                    : "text-ink hover:bg-hover"
+                }`}
               >
-                <span>{item.label}</span>
+                {item.label}
               </li>
             ))}
           </ul>
         </div>
-        <div className="mainRight">
+
+        <div className="relative flex-1 bg-page p-3">
           <button
-            id="collapseBtn"
             onClick={() => setCollapsed((c) => !c)}
             title={collapsed ? "展开" : "折叠"}
+            className={`absolute top-1/2 z-[2] h-14 w-[18px] -translate-y-1/2 cursor-pointer rounded-full border-none bg-panel text-[9px] leading-none text-ink shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:text-active-ink ${
+              collapsed ? "left-1" : "-left-[9px]"
+            }`}
           >
             {collapsed ? "▶" : "◀"}
           </button>
-          <div className="content">
+
+          <div className="h-full overflow-y-auto bg-panel">
             {current ? (
               <>
-                <h1 className="articleTitle">{current.title}</h1>
-                <div className="articleBody">
+                <h1 className="px-6 pt-6 text-[22px] font-semibold">
+                  {current.title}
+                </h1>
+                <div className="markdown px-6 pb-8 pt-4 text-sm leading-[1.8]">
                   <ReactMarkdown>{current.content}</ReactMarkdown>
                 </div>
               </>
             ) : (
               <>
-                <div className="totalBar">
+                <div className="border-b border-line px-4 py-4 text-sm">
                   Total {filterData.length} articles
                 </div>
-                <table className="articleTable">
-                  <colgroup>
-                    <col className="colTitle" />
-                    <col className="colTime" />
-                    <col className="colTime" />
-                    <col className="colWords" />
-                  </colgroup>
+                <table className="w-full table-fixed border-collapse text-sm">
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Update Time</th>
-                      <th>Creation Time</th>
-                      <th>Words</th>
+                      <th className={`w-[26%] ${thBase}`}>Title</th>
+                      <th className={`w-[30%] ${thBase}`}>Update Time</th>
+                      <th className={`w-[30%] ${thBase}`}>Creation Time</th>
+                      <th className={thBase}>Words</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filterData.map((a) => (
-                      <tr key={`${a.category}/${a.name}`}>
-                        <td>
+                      <tr
+                        key={`${a.category}/${a.name}`}
+                        className="hover:bg-subtle"
+                      >
+                        <td className={tdClass}>
                           <a
-                            className="titleLink"
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();
                               openArticle(a.category, a.name, a.title);
                             }}
+                            className="text-link no-underline hover:underline"
                           >
                             {a.title}
                           </a>
                         </td>
-                        <td>{formatTime(a.mtime)}</td>
-                        <td>{formatTime(a.ctime)}</td>
-                        <td className="wordsCell">
+                        <td className={tdClass}>{formatTime(a.mtime)}</td>
+                        <td className={tdClass}>{formatTime(a.ctime)}</td>
+                        <td className={`${tdClass} tabular-nums`}>
                           {a.size.toLocaleString("en-US")}
                         </td>
                       </tr>
@@ -168,7 +207,7 @@ const App = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

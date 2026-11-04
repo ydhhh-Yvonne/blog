@@ -1,7 +1,102 @@
-* {
-    box-sizing: border-box;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+    --page: #f2f2f2;
+    --panel: #ffffff;
+    --subtle: #f9fafb;
+    --th: #f5f7f9;
+    --hover: #f3f4f6;
+    --line: #e5e7eb;
+    --line-light: #ebedf0;
+    --ink: #33383e;
+    --ink-2: #4b5563;
+    --link: #4a90e2;
+    --active-bg: #dbeafe;
+    --active-ink: #2563eb;
+}
+
+.dark {
+    color-scheme: dark;
+    --page: #121417;
+    --panel: #1b1d21;
+    --subtle: #22252a;
+    --th: #23262b;
+    --hover: #262a30;
+    --line: #33373d;
+    --line-light: #2a2e34;
+    --ink: #e6e8eb;
+    --ink-2: #b6bcc4;
+    --link: #6ba8e8;
+    --active-bg: #1e3a5f;
+    --active-ink: #7cb2ee;
+}
+
+@theme inline {
+    --color-page: var(--page);
+    --color-panel: var(--panel);
+    --color-subtle: var(--subtle);
+    --color-th: var(--th);
+    --color-hover: var(--hover);
+    --color-line: var(--line);
+    --color-line-light: var(--line-light);
+    --color-ink: var(--ink);
+    --color-ink-2: var(--ink-2);
+    --color-link: var(--link);
+    --color-active-bg: var(--active-bg);
+    --color-active-ink: var(--active-ink);
 }
 
 body {
     margin: 0;
+    background: var(--page);
+    color: var(--ink);
+}
+
+@layer components {
+    .markdown a {
+        color: var(--link);
+    }
+
+    .markdown code {
+        padding: 2px 5px;
+        font-size: 13px;
+        background: var(--hover);
+        border-radius: 4px;
+    }
+
+    .markdown pre {
+        padding: 14px 16px;
+        overflow-x: auto;
+        background: var(--subtle);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+    }
+
+    .markdown pre code {
+        padding: 0;
+        background: none;
+    }
+
+    .markdown blockquote {
+        margin: 0 0 16px;
+        padding: 4px 14px;
+        color: var(--ink-2);
+        border-left: 3px solid var(--line);
+    }
+
+    .markdown img {
+        max-width: 100%;
+    }
+
+    .markdown table {
+        border-collapse: collapse;
+    }
+
+    .markdown th,
+    .markdown td {
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+    }
 }
