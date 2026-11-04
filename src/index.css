@@ -15,6 +15,13 @@
     --link: #4a90e2;
     --active-bg: #dbeafe;
     --active-ink: #2563eb;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+        monospace;
+    --code-bg: #1e1e1e;
+    --code-ink: #d4d4d4;
 }
 
 .dark {
@@ -31,6 +38,8 @@
     --link: #6ba8e8;
     --active-bg: #1e3a5f;
     --active-ink: #7cb2ee;
+    --code-bg: #161b22;
+    --code-ink: #e6edf3;
 }
 
 @theme inline {
@@ -52,9 +61,88 @@ body {
     margin: 0;
     background: var(--page);
     color: var(--ink);
+    font-family: var(--font-sans);
 }
 
 @layer components {
+    .markdown {
+        font-size: 15px;
+        line-height: 1.75;
+        word-break: break-word;
+    }
+
+    .markdown h1,
+    .markdown h2,
+    .markdown h3,
+    .markdown h4,
+    .markdown h5,
+    .markdown h6 {
+        margin: 32px 0 16px;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .markdown h1 {
+        font-size: 30px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .markdown h2 {
+        font-size: 28px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .markdown h3 {
+        font-size: 22px;
+    }
+
+    .markdown h4 {
+        font-size: 17px;
+    }
+
+    .markdown h5,
+    .markdown h6 {
+        font-size: 15px;
+    }
+
+    .markdown p {
+        margin: 0 0 16px;
+    }
+
+    .markdown strong {
+        font-weight: 600;
+    }
+
+    /* 列表 */
+    .markdown ul {
+        margin: 0 0 14px;
+        padding-left: 24px;
+        list-style: disc;
+    }
+
+    .markdown ol {
+        margin: 0 0 14px;
+        padding-left: 24px;
+        list-style: decimal;
+    }
+
+    .markdown li {
+        margin: 4px 0;
+    }
+
+    .markdown li > ul,
+    .markdown li > ol {
+        margin: 4px 0;
+    }
+
+    .markdown hr {
+        margin: 24px 0;
+        border: none;
+        border-top: 1px solid var(--line);
+    }
+
     .markdown a {
         color: var(--link);
     }
@@ -62,21 +150,28 @@ body {
     .markdown code {
         padding: 2px 5px;
         font-size: 13px;
+        font-family: var(--font-mono);
         background: var(--hover);
         border-radius: 4px;
     }
 
+    /* 代码块：编辑器风格的深色底（浅色模式下也一样） */
     .markdown pre {
-        padding: 14px 16px;
+        margin: 0 0 16px;
+        padding: 16px;
         overflow-x: auto;
-        background: var(--subtle);
-        border: 1px solid var(--line);
-        border-radius: 6px;
+        background: var(--code-bg);
+        color: var(--code-ink);
+        border: none;
+        border-radius: 8px;
     }
 
     .markdown pre code {
         padding: 0;
+        font-size: 13px;
+        line-height: 20px;
         background: none;
+        color: inherit;
     }
 
     .markdown blockquote {
@@ -91,6 +186,7 @@ body {
     }
 
     .markdown table {
+        margin: 0 0 16px;
         border-collapse: collapse;
     }
 
@@ -98,5 +194,10 @@ body {
     .markdown td {
         padding: 8px 12px;
         border: 1px solid var(--line);
+    }
+
+    .markdown th {
+        background: var(--th);
+        font-weight: 600;
     }
 }
